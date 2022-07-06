@@ -1,112 +1,133 @@
+var allScores =  JSON.parse(localStorage.getItem("scores")) || [];
+
 var startBtn = document.querySelector("#start_quiz");
-var questionIndex
-let score = 0;
-let rightanswerReward = 1;
-let wronganswer = -1;
 
-var currentTime = document.querySelector("#currentTime");
-var timer = document.querySelector("start_time");
-var question = document.querySelector("wrapper");
+var questionNumber = 0;
 
-var secondsleft= 80;
-var holdinterval = 0;
-var penalty = 20;
-
-var ulcreate = document.createElement ("ul");
-
-time.addEventListener("click", function () {
-    if (holdinterval === 0) {
-        holdinterval = setInterval(function () {
-            secondleft--; 
-            currentTime.textContent = "time:" + secondleft;
-            if (secondsleft <= 0){
-                clearInterval(holdinterval);
-                alldone();
-                currentTime.textContent = "!time's up!";
-            }
-        }, 1000);
-    }
-    render(questionIndex);
-});
-
-function render(questionIndex){ 
-    question.innerHTML = "";
-    ulcreate.innerHTML = "";
-    for (var i = 0; i < questions.length; i++) {
-        var userQuestion = questions[questionIndex].title;
-        var userchoices = questions[questionIndex].choices;
-        question.textContent = userQuestion;
-    }
-    userchoices.foreach(function(anotherfeatuer){
-        var listfeatuer = document.createAttribute;
-        listfeatuer.textContent = anotherfeatuer; 
-        question.appendchild(ulcreate); 
-
-        listfeatuer.addEventListener("click", (compare));
-
-    })
-}
 var questions = [
     {
         question: "Javascript is an _____ language:",
-        choies: ["Object-Oriented","Object-Based","Procedural"],
+        choices: ["Object-Oriented","Object-Based","Procedural"],
         answer: "Object-Oriented"
     }, 
     {
         question: "How can a datatype be declared to be a constant type:",
-        choies: ["var","const","let"],
+        choices: ["var","const","let"],
         answer: "const"
     },
     {
         question: "When an operator's value is NULL, the typeof returned byt he unray operaror is:",
-        choies: ["undefined","boolean","object"],
+        choices: ["undefined","boolean","object"],
         answer: "object"
+    }   
+]
+
+function nextQuestion (event) {
+    // if statement that checks if the questionNumber does not exceed the length of your questions
+
+
+
+
+
+    // getting the user's answer
+    var selectedAnswer = (event.target.textContent)
+
+    // getting the actual correct answer
+    var correctAnswer = (questions[questionNumber].answer)
+
+    // check the answer if correct
+    if(selectedAnswer == correctAnswer) {
+        alert("Correct!")
+    } else {
+        alert("Wrong!")
+        // deduct 15 seconds from time
+        // time = time - 15;
+        time-=15;
     }
 
 
-    
-]
+
+
+    questionNumber = questionNumber + 1;
+    if (questionNumber<=2)
+    {changeQuestion();}
+    else{ document.querySelector("#question_page").style.display="none";
+    document.querySelector("#finish_page").style.display="flex"
+}
+}
+
+// function definition
+function changeQuestion () {
+    // select your element that you want to edit
+    var questionText = document.querySelector("#questionText")
+
+    // use that variable to edit its properties
+    questionText.textContent = questions[questionNumber].question;
+
+
+    var option1 = document.querySelector("#option1");
+    option1.textContent = questions[questionNumber].choices[0];
+    option1.addEventListener("click", nextQuestion)
+
+    var option2 = document.querySelector("#option2");
+    option2.textContent = questions[questionNumber].choices[1];
+    option2.addEventListener("click", nextQuestion)
+
+    var option3 = document.querySelector("#option3");
+    option3.textContent = questions[questionNumber].choices[2];
+    option3.addEventListener("click",  nextQuestion)
+
+}
+
+
 function startQuiz () {
-    var secondPageDiv = document.querySelector("#second_page");
+    timer ()
+    var questionPage = document.querySelector("#question_page");
     var firstPageDiv = document.querySelector("#first_page");
 
     firstPageDiv.style.display = "none";
-    secondPageDiv.style.display = "flex";
+    questionPage.style.display = "flex";
+    document.querySelector("#finish_page").style.display ="none"
+
+    changeQuestion();
+    
+    //     } // function call - activate a function
+
 }
-function loadquestion () {
-    var currentquestion = question [current_question_index] 
-    let html = `<h2>${currentQuestion.q}</h2>`;
-    for (let possibleAnswer of possibleAnswers){
-        html += `<button>${possibleAnswer}</button>`;
+var time = 100;
 
-} 
-document.querySelector("main").innerHTML = html;
-      //now we have buttons...let's listen for clicks on them
-      let buttons = document.querySelectorAll("main button");
-      for (let button of buttons){
-        button.addEventListener("click", handleUserClick);
-      }
-  } 
-function handleUserClick (e) {
-    // e is the click event object
-    let userSelection = e.target.textContent
-    let correctAnswer = questions[current_question_index].answer
-    if (userSelection === correctAnswer) {
-        score += rightanswerReward; 
+
+function timer(){
+    setInterval (function(){
+        if (time>0 &&questionNumber<=2)
+        {time--
+        document.querySelector("#timer").textContent = time}
+        else {
+            clearInterval
+        }
+        // if timer goes below zero, that means it stops the quiz.
+    
+    }, 1000)
+
+}
+
+
+startBtn.addEventListener("click", startQuiz)
+document.querySelector("#submit").addEventListener("click", saveLS)
+
+function saveLS(){
+
+    var highscore = {
+        initials: document.querySelector("#initials").value,
+        score: time
     }
-    else {
-        score += wronganswer
-        // put time penalyty 
-    }
-} 
 
-current_question_index++;
-  
+    allScores.push(highscore)
 
+    localStorage.setItem("scores", JSON.stringify(allScores));
 
+    location.assign("./hs.html")
+
+}
 
 
-for (let possibleAnswer of possibleAnswers){
-        html += `<button>${possibleAnswer}</button>`;
-
-startBtn.addEventListener("click", startQuiz)}
